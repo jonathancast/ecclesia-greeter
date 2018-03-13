@@ -1,0 +1,21 @@
+#! /bin/bash
+
+\curl -L https://install.perlbrew.pl | bash || exit $?
+echo '. $HOME/perl5/perlbrew/etc/bashrc' >> $HOME/.bashrc
+. $HOME/perl5/perlbrew/etc/bashrc
+
+if ! [ -x $HOME/perl5/perlbrew/bin/cpanm ]; then
+    perlbrew install-cpanm || exit $?
+fi
+if ! perlbrew list | grep -q $(cat ./perl-version); then
+    perlbrew install $(cat ./perl-version) || exit $?
+fi
+if ! perlbrew list | grep -q $(cat ./perl-version)@greeter; then
+    perlbrew lib create $(cat ./perl-version)@greeter || exit $?
+fi
+
+echo 'Use '
+echo
+echo '    perlbrew switch' $(cat ./perl-version)@greeter
+echo
+echo 'to use this software'
