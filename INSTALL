@@ -8,11 +8,13 @@ if ! [ -x $HOME/perl5/perlbrew/bin/cpanm ]; then
     perlbrew install-cpanm || exit $?
 fi
 if ! perlbrew list | grep -q $(cat ./perl-version); then
-    perlbrew install $(cat ./perl-version) || exit $?
+    perlbrew install --notest $(cat ./perl-version) || exit $?
 fi
 if ! perlbrew list | grep -q $(cat ./perl-version)@greeter; then
     perlbrew lib create $(cat ./perl-version)@greeter || exit $?
 fi
+
+perlbrew exec --with $(cat ./perl-version)@greeter cpanm --notest $(cat ./perl-deps) || exit $?
 
 echo 'Use '
 echo
