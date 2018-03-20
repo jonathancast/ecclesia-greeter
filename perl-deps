@@ -1,1 +1,4 @@
 Dancer2@0.205002
+File::Temp@0.2304
+File::pushd@1.014
+autodie@2.29
