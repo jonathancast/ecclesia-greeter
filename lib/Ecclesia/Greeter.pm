@@ -8,6 +8,8 @@ use File::Temp;
 
 use File::pushd qw/ tempd /;
 
+get '/' => sub { send_file '/index.html' };
+
 get '/src.tar.gz' => sub {
     my $dir = tempd();
     our $VERSION;
