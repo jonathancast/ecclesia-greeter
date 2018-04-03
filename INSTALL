@@ -1,8 +1,10 @@
 #! /bin/bash
 
-\curl -L https://install.perlbrew.pl | bash || exit $?
-echo '. $HOME/perl5/perlbrew/etc/bashrc' >> $HOME/.bashrc
-. $HOME/perl5/perlbrew/etc/bashrc
+if ! [ -x $(which perlbrew) ]; then
+    \curl -L https://install.perlbrew.pl | bash || exit $?
+    echo '. $HOME/perl5/perlbrew/etc/bashrc' >> $HOME/.bashrc
+    . $HOME/perl5/perlbrew/etc/bashrc
+fi
 
 if ! [ -x $HOME/perl5/perlbrew/bin/cpanm ]; then
     perlbrew install-cpanm || exit $?
@@ -15,6 +17,20 @@ if ! perlbrew list | grep -q $(cat ./perl-version)@greeter; then
 fi
 
 perlbrew exec --with $(cat ./perl-version)@greeter cpanm --notest $(cat ./perl-deps) || exit $?
+
+if ! [ -d $HOME/sys/node-v8.10.0-linux-x64 ]; then
+    mkdir -p $HOME/sys || exit $?
+    pushd $HOME/sys || exit $?
+    wget -O node-v8.10.0-linux-x64.tar.xz https://nodejs.org/dist/v8.10.0/node-v8.10.0-linux-x64.tar.xz || exit $?
+    tar -xJf node-v8.10.0-linux-x64.tar.xz || exit $?
+    echo 'PATH=$PATH:$HOME/sys/node-v8.10.0-linux-x64/bin' >> $HOME/.bashrc
+    PATH=$PATH:$HOME/sys/node-v8.10.0-linux-x64/bin
+    popd
+fi
+
+if ! npm list -g @angular/cli > /dev/null 2>&1; then
+    npm install -g @angular/cli || exit $?
+fi
 
 echo 'Use '
 echo
