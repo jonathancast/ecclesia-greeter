@@ -1,5 +1,11 @@
 # ecclesia-greeter
+
 Church greeting software
+
+Ecclesia Greeter is Copyright © 2018 by Jonathan Cast.
+This software is licensed under the GNU Affero GPL; see the LICENSE file.
+This software is free for anyone to copy or modify, but I ask that, if you use it, you pay me $20/month so I can continue developing it.
+Under US copyright law, I cannot *require* you to pay for this software, but please do the ethical thing and pay for the software you use.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.3.
 
