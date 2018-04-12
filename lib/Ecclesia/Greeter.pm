@@ -6,6 +6,13 @@ use autodie;
 
 get '/' => sub { send_file '/index.html' };
 
+get '/config' => sub {
+    content_type 'application/json';
+    return encode_json({
+        name => config->{name} // 'Ecclesia',
+    });
+};
+
 get '/src.tar.gz' => sub {
     require Ecclesia::Greeter::Stores::Source;
 
