@@ -24,4 +24,23 @@ export class Api {
             ;
         });
     }
+
+    ping() {
+        return new Observable<boolean>(observer => {
+            this._http
+                .get('/ping')
+                .subscribe({
+                    next: res => { observer.next(true); observer.complete(); },
+                    error: err => {
+                        if (err.status == 403) {
+                            observer.next(false);
+                            observer.complete();
+                        } else {
+                            observer.error(err);
+                        }
+                    },
+                })
+            ;
+        });
+    }
 }

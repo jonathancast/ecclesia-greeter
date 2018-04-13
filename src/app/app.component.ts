@@ -9,8 +9,10 @@ import { Api } from './api.service';
 })
 export class AppComponent {
     title = 'Ecclesia Greeter';
+    logged_in = false;
     constructor(private _api: Api) { }
     ngOnInit(): void {
         this._api.config.subscribe((config: any) => { this.title = config['name'] + ' Greeter'; });
+        this._api.ping().subscribe(res => { this.logged_in = res; });
     }
 }

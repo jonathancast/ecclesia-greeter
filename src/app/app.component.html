@@ -2,7 +2,7 @@
     <h1>
         Welcome to {{ title }}!
     </h1>
-    <div id="container">
+    <div id="container" *ngIf="logged_in">
         <section id="member">
             <h1>Members</h1>
             <span class="entry">Phone #: <input id="member-phone" type="tel"></span>

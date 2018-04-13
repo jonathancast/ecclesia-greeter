@@ -13,6 +13,17 @@ get '/config' => sub {
     });
 };
 
+get '/ping' => sub {
+    if (session 'user') {
+        content_type 'application/json';
+        return encode_json({ status => 'ok', });
+    } else {
+        status 'forbidden';
+        content_type 'application/json';
+        return encode_json({ status => 'forbidden', errors => [ 'notloggedon', ], });
+    }
+};
+
 get '/src.tar.gz' => sub {
     require Ecclesia::Greeter::Stores::Source;
 
