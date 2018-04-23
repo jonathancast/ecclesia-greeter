@@ -1,6 +1,6 @@
 #! /bin/bash
 
-if ! [ -x $(which perlbrew) ]; then
+if ! [ -x "$(which perlbrew)" ]; then
     \curl -L https://install.perlbrew.pl | bash || exit $?
     echo '. $HOME/perl5/perlbrew/etc/bashrc' >> $HOME/.bashrc
     . $HOME/perl5/perlbrew/etc/bashrc
