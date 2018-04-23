@@ -21,7 +21,7 @@ perlbrew exec --with $(cat ./perl-version)@greeter cpanm --notest $(cat ./perl-d
 if ! [ -d $HOME/sys/node-v8.10.0-linux-x64 ]; then
     mkdir -p $HOME/sys || exit $?
     pushd $HOME/sys || exit $?
-    wget -O node-v8.10.0-linux-x64.tar.xz https://nodejs.org/dist/v8.10.0/node-v8.10.0-linux-x64.tar.xz || exit $?
+    wget -q -O node-v8.10.0-linux-x64.tar.xz https://nodejs.org/dist/v8.10.0/node-v8.10.0-linux-x64.tar.xz || exit $?
     tar -xJf node-v8.10.0-linux-x64.tar.xz || exit $?
     echo 'PATH=$PATH:$HOME/sys/node-v8.10.0-linux-x64/bin' >> $HOME/.bashrc
     PATH=$PATH:$HOME/sys/node-v8.10.0-linux-x64/bin
