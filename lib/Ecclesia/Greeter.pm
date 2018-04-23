@@ -4,23 +4,22 @@ use Dancer2;
 
 use autodie;
 
+set serializer => 'JSON';
+
 get '/' => sub { send_file '/index.html' };
 
 get '/config' => sub {
-    content_type 'application/json';
-    return encode_json({
+    return {
         name => config->{name} // 'Ecclesia',
-    });
+    };
 };
 
 get '/ping' => sub {
     if (session 'user') {
-        content_type 'application/json';
-        return encode_json({ status => 'ok', });
+        return { status => 'ok', };
     } else {
         status 'forbidden';
-        content_type 'application/json';
-        return encode_json({ status => 'forbidden', errors => [ 'notloggedon', ], });
+        return { code => 'notloggedon', status => 'forbidden', errors => [ 'notloggedon', ], };
     }
 };
 
