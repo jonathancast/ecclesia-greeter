@@ -5,6 +5,7 @@ DBIx::Class::DeploymentHandler
 DBIx::Class::EncodedColumn
 Dancer2
 Dancer2::Plugin::DBIC
+Dancer2::Session::JSON
 File::Temp
 File::pushd
 HTTP::Cookies
