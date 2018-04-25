@@ -1,7 +1,14 @@
 <div>
-    <h1>
-        Welcome to {{ title }}!
-    </h1>
+    <div id="header">
+        <div class="row">
+            <div class="item title">
+                <h1>
+                    Welcome to {{ title }}!
+                </h1>
+            </div>
+        </div>
+    </div>
+    <login-page *ngIf="!logged_in" (logged_in)="onLoggedIn()"></login-page>
     <div id="container" *ngIf="logged_in">
         <section id="member">
             <h1>Members</h1>

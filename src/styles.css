@@ -1,4 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+#header: {
+    clear: both;
+    padding-right: 0;
+    display: table;
+    padding-bottom: 2em;
+}
+#header .row: {
+    display: table-row;
+}
+#header .row .item {
+    display: table-cell;
+}
+#header .item.title { width: 100%; }
 #footer {
     clear: both;
     padding-right: 0;

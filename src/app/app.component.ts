@@ -15,4 +15,6 @@ export class AppComponent {
         this._api.config.subscribe((config: any) => { this.title = config['name'] + ' Greeter'; });
         this._api.ping().subscribe(res => { this.logged_in = res; });
     }
+
+    onLoggedIn(user) { this.logged_in = true; }
 }

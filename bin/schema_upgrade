@@ -1,0 +1,25 @@
+#! /usr/bin/env perl
+
+use Dancer2;
+use Dancer2::Plugin::DBIC;
+
+use autodie;
+
+use FindBin;
+use lib $FindBin::Bin =~ s{/bin$}{/lib}r;
+
+use aliased 'DBIx::Class::DeploymentHandler' => 'DH';
+
+my $dh = DH->new({
+  schema              => schema,
+  databases           => 'PostgreSQL',
+  sql_translator_args => { add_drop_table => 0 },
+});
+
+$dh->prepare_deploy();
+$dh->prepare_upgrade({
+  from_version => 1,
+  to_version   => 2,
+});
+
+$dh->upgrade();

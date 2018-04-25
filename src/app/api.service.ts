@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
+export interface User {}
+
 @Injectable()
 export class Api {
     private _config = undefined;
@@ -37,6 +39,28 @@ export class Api {
                             observer.complete();
                         } else {
                             observer.error(err);
+                        }
+                    },
+                })
+            ;
+        });
+    }
+
+    login(lid, pwd) {
+        return new Observable<User>(observer => {
+            this._http
+                .post('/login', { login_id: lid, password: pwd, })
+                .subscribe({
+                    next: res => { observer.next(res); observer.complete(); },
+                    error: err => {
+                        switch (err.status) {
+                            case 403:
+                                observer.error(err.error);
+                                break;
+                            default:
+                                console.log("Unknown HTTP response", err);
+                                observer.error({ code: 'unknown', });
+                                break;
                         }
                     },
                 })

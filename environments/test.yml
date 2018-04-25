@@ -25,5 +25,5 @@ startup_info: 1
 plugins:
     DBIC:
         default:
-            dsn: dbi:Pg:dbname=dev
+            dsn: dbi:Pg:dbname=unittest
             schema_class: Ecclesia::Greeter::Stores::Schema

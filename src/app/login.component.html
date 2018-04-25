@@ -1,0 +1,5 @@
+Login id: <input id="login_id" [(ngModel)]="login_id" (keyup.enter)="login()">
+Password: <input id="password" [(ngModel)]="password" type="password" (keyup.enter)="login()">
+<button id="login" (click)="login()">Log in</button>
+
+<div class="error">{{error_message}}</div>

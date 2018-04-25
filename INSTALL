@@ -37,3 +37,6 @@ echo
 echo '    perlbrew switch' $(cat ./perl-version)@greeter
 echo
 echo 'to use this software'
+
+echo
+echo 'You probably want to run ./bin/schema_install to set up the database before you start'

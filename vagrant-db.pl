@@ -28,5 +28,6 @@ system qw/ su postgres -c /, q{createuser vagrant} and die "Can't add vagrant us
 {
     open my $fh, '|-', qw/ su postgres -c psql /;
     print $fh qq{ALTER USER vagrant WITH PASSWORD 'vagrdbpass';};
+    print $fh qq{ALTER ROLE vagrant WITH CREATEDB;};
     close $fh or die "Can't reset password on user vagrant";
 }

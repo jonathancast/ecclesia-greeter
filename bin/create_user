@@ -1,0 +1,39 @@
+#! /usr/bin/env perl
+
+use Dancer2;
+use Dancer2::Plugin::DBIC;
+
+use autodie;
+no indirect;
+
+use FindBin;
+use lib $FindBin::Bin =~ s{/bin$}{/lib}r;
+
+use Term::ReadKey;
+use Try::Tiny;
+
+$|++;
+
+my ($login_id) = @ARGV;
+
+my $password;
+
+ReadMode 'noecho';
+try {
+    print "Please enter a password: ";
+    chomp($password = <STDIN>);
+    print "\n";
+
+    print "Re-enter password: ";
+    chomp(my $confirm_password = <STDIN>);
+    print "\n";
+
+    if ($password ne $confirm_password) {
+        print "Invalid password entered\n";
+        exit 1;
+    }
+} finally { ReadMode 'restore'; };
+
+my $user = schema->resultset('User')->create({ login_id => $login_id, password => $password, });
+
+print "Created user @{[ encode_json($user->as_hash) ]}\n";
