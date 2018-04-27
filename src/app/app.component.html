@@ -10,10 +10,7 @@
     </div>
     <login-page *ngIf="!logged_in" (logged_in)="onLoggedIn()"></login-page>
     <div id="container" *ngIf="logged_in">
-        <section id="member">
-            <h1>Members</h1>
-            <span class="entry">Phone #: <input id="member-phone" type="tel"></span>
-        </section>
+        <member></member>
         <section id="visitor">
             <h1>Visitors</h1>
             <div class="entry-list">
