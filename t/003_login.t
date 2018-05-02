@@ -5,6 +5,9 @@ no indirect;
 
 use autodie;
 
+use FindBin;
+use lib $FindBin::RealBin.'/lib';
+
 use Test::More;
 use Plack::Test;
 
@@ -15,19 +18,7 @@ use HTTP::Request::Common;
 
 use JSON::MaybeXS qw/ decode_json encode_json /;
 
-BEGIN {
-    use DBICx::Sugar qw/ schema /;
-    use Ecclesia::Greeter::Stores::Schema;
-
-    $ENV{DANCER_ENVIRONMENT} = 'test';
-
-    system qw/ dropdb --if-exists unittest /;
-    system qw/ createdb unittest /;
-
-    my $dsn = 'dbi:Pg:dbname=unittest';
-    Ecclesia::Greeter::Stores::Schema->connect($dsn)->deploy();
-    DBICx::Sugar::config({ default => { dsn => $dsn, schema_class => 'Ecclesia::Greeter::Stores::Schema', } });
-}
+use T::TestDB;
 
 use Ecclesia::Greeter;
 
