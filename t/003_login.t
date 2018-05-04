@@ -79,9 +79,15 @@ subtest 'Login' => sub {
     subtest 'Valid login' => sub {
         my $jar = HTTP::Cookies->new();
 
-        my $res = $sut->request(POST "$host/login", ContentType => 'application/json', Content => encode_json($params));
-        is $res->code, 200, 'Trying to login with correct credentials succeeds';
+        my $res = $sut->request(GET "$host/ping");
+        is $res->code, 403, 'Checking for a valid session before logging in fails';
         my $json = try { decode_json($res->decoded_content) };
+        isnt $json, undef, '. . . and it returns JSON' or diag $res->decoded_content;
+        is_deeply $json, { status => 'unauthorized', code => 'notloggedon', }, '. . . and it returns the right value' or diag explain $json;
+
+        $res = $sut->request(POST "$host/login", ContentType => 'application/json', Content => encode_json($params));
+        is $res->code, 200, 'Trying to login with correct credentials succeeds';
+        $json = try { decode_json($res->decoded_content) };
         isnt $json, undef, '. . . and it returns JSON' or diag $res->decoded_content;
         is_deeply $json, { login_id => 'dev', }, '. . . and it returns the right user information';
 

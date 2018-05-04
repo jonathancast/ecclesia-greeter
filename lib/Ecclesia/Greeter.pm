@@ -20,7 +20,7 @@ get '/ping' => sub {
         return { status => 'ok', };
     } else {
         status 'forbidden';
-        return { code => 'notloggedon', status => 'forbidden', };
+        return { code => 'notloggedon', status => 'unauthorized', };
     }
 };
 
