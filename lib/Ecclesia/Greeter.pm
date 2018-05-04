@@ -41,6 +41,17 @@ post '/login' => sub {
     return $user->as_hash;
 };
 
+prefix '/api' => sub {
+    any '/**' => sub {
+        if (session 'user') {
+            pass();
+        }
+
+        status 'forbidden';
+        return { code => 'notloggedon', status => 'unauthorized', };
+    };
+};
+
 sub missing_param {
     my ($param) = @_;
 
