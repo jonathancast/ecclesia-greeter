@@ -17,12 +17,14 @@ sub import {
 
     $ENV{DANCER_ENVIRONMENT} = 'test';
 
-    system qw/ dropdb --if-exists unittest /;
-    system qw/ createdb unittest /;
+    unless (our $TEST_DB_IMPORTED++) {
+        system qw/ dropdb --if-exists unittest /;
+        system qw/ createdb unittest /;
 
-    my $dsn = 'dbi:Pg:dbname=unittest';
-    Ecclesia::Greeter::Stores::Schema->connect($dsn)->deploy();
-    DBICx::Sugar::config({ default => { dsn => $dsn, schema_class => 'Ecclesia::Greeter::Stores::Schema', } });
+        my $dsn = 'dbi:Pg:dbname=unittest';
+        Ecclesia::Greeter::Stores::Schema->connect($dsn)->deploy();
+        DBICx::Sugar::config({ default => { dsn => $dsn, schema_class => 'Ecclesia::Greeter::Stores::Schema', } });
+    }
 
     DBICx::Sugar->import::into(scalar caller, qw/ schema /);
 }
