@@ -115,33 +115,15 @@ subtest 'Login' => sub {
         isnt $json, undef, '. . . and it returns valid JSON' or diag $res->decoded_content;
         is_deeply $json, { status => 'unauthorized', code => 'notloggedon', }, '. . . and it returns the right value' or diag explain $json;
 
-        with_login($params, sub($req) {
-            $res = $req->request(GET "$host/api/nosuchpath");
-            is $res->code, 404, 'Requesting an API path with a login does not return a 403';
-        });
+        my $jar = HTTP::Cookies->new();
+        $res = $sut->request(POST "$host/login", ContentType => 'application/json', Content => encode_json($params));
+        croak "Couldn't log in with ".Dumper($params).'  ' unless $res->code == 200;
+        $jar->extract_cookies($res);
+        my $req = GET "$host/api/nosuchpath";
+        $jar->add_cookie_header($req);
+        $res = $sut->request($req);
+        is $res->code, 404, 'Requesting an API path with a login does not return a 403';
     };
 };
 
-sub with_login($params, $k) {
-    my $jar = HTTP::Cookies->new();
-
-    my $res = $sut->request(POST "$host/login", ContentType => 'application/json', Content => encode_json($params));
-    croak "Couldn't log in with ".Dumper($params).'  ' unless $res->code == 200;
-    $jar->extract_cookies($res);
-
-    $k->(T::TestLogin::WrappedSUT->new({ sut => $sut, jar => $jar, }));
-}
-
 done_testing;
-
-use Moops;
-
-class T::TestLogin::WrappedSUT {
-    has sut => is => 'ro', required => 1;
-    has jar => is => 'ro', required => 1;
-
-    method request($req) {
-        $self->jar->add_cookie_header($req);
-        return $self->sut->request($req);
-    }
-}
