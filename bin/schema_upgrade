@@ -8,7 +8,16 @@ use autodie;
 use FindBin;
 use lib $FindBin::Bin =~ s{/bin$}{/lib}r;
 
+use Getopt::Long;
+
 use aliased 'DBIx::Class::DeploymentHandler' => 'DH';
+
+GetOptions(
+    'from=i' => \my $from_version,
+    'to=i' => \my $to_version,
+)
+    or die "Error in command line arguments\n"
+;
 
 my $dh = DH->new({
   schema              => schema,
@@ -18,8 +27,8 @@ my $dh = DH->new({
 
 $dh->prepare_deploy();
 $dh->prepare_upgrade({
-  from_version => 1,
-  to_version   => 2,
+  from_version => $from_version,
+  to_version   => $to_version,
 });
 
 $dh->upgrade();
