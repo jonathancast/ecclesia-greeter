@@ -50,6 +50,31 @@ prefix '/api' => sub {
         status 'forbidden';
         return { code => 'notloggedon', status => 'unauthorized', };
     };
+
+    get '/member' => sub {
+        my $phone = query_parameters->get('phone');
+
+        unless ($phone) {
+            status 'bad_request';
+            return { status => 'bad_request', code => 'nophone', msg => 'Missing phone number in /api/member', };
+        }
+
+        # Phone numbers are stored internally as 10-digit strings
+        $phone =~ s/\D//g;
+
+        unless (length $phone == 10) {
+            status 'bad_request';
+            return { status => 'bad_request', code => 'badphone', msg => qq{The phone number '$phone' is not a 10-digit string}, need => { phone => 'phone-number', }, };
+        }
+
+        my $member = schema->resultset('Member')->find({ phone => $phone, });
+        if ($member) {
+            return $member->as_hash;
+        } else {
+            status 'not_found';
+            return { status => 'not_found', code => 'notfound', msg => qq{No member found with phone number $phone}, };
+        }
+    };
 };
 
 sub missing_param {

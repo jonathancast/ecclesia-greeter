@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-no indirect;
+no indirect 'fatal';
 
 use autodie;
 
@@ -11,6 +11,8 @@ no warnings 'experimental::signatures';
 
 use FindBin;
 use lib $FindBin::RealBin.'/lib';
+
+use Try::Tiny;
 
 use Test::More;
 use Plack::Test;
@@ -23,9 +25,45 @@ use T::TestDB;
 use T::TestLogin;
 
 with_login(sub($sut) {
+    subtest 'Missing phone number' => sub {
+        my $res = $sut->request(GET '/api/member');
+        is $res->code, 400, 'Omitting the phone number yields a 400';
+        my $json = try { decode_json($res->decoded_content) };
+        isnt $json, undef, '. . . and it returns valid JSON' or diag $res->decoded_content;
+        is_deeply $json, { status => 'bad_request', code => 'nophone', msg => 'Missing phone number in /api/member', }, '. . . and it returns the right error mesage';
+    };
+
+    subtest 'Too-short phone number' => sub {
+        my $res = $sut->request(GET '/api/member?phone=555-111-222');
+        is $res->code, 400, 'Too-short phone numbers yield 400s';
+        my $json = try { decode_json($res->decoded_content) };
+        isnt $json, undef, '. . . and it returns valid JSON' or diag $res->decoded_content;
+        is_deeply $json, { status => 'bad_request', code => 'badphone', msg => q{The phone number '555111222' is not a 10-digit string}, need => { phone => 'phone-number', }, }, '. . . and it returns the right error mesage';
+    };
+
+    subtest 'Too-long phone number' => sub {
+        my $res = $sut->request(GET '/api/member?phone=555-111-22222');
+        is $res->code, 400, 'Too-long phone numbers yield 400s';
+        my $json = try { decode_json($res->decoded_content) };
+        isnt $json, undef, '. . . and it returns valid JSON' or diag $res->decoded_content;
+        is_deeply $json, { status => 'bad_request', code => 'badphone', msg => q{The phone number '55511122222' is not a 10-digit string}, need => { phone => 'phone-number', }, }, '. . . and it returns the right error mesage';
+    };
+
     subtest 'Non-existent member' => sub {
-        my $res = $sut->request(GET '/api/member', { phone => '555-111-2222', });
+        my $res = $sut->request(GET '/api/member?phone=555-111-2222');
         is $res->code, 404, 'Finding a non-existent member returns a 404';
+    };
+
+    subtest 'Member in the database' => sub {
+        my $member = schema->resultset('Member')->create({
+            phone => '5551112222',
+        });
+
+        my $res = $sut->request(GET '/api/member?phone=555-111-2222');
+        is $res->code, 200, 'Finding an existing member returns a 200';
+        my $json = try { decode_json($res->decoded_content) };
+        isnt $json, undef, '. . . and it returns valid JSON' or diag $res->decoded_content;
+        is_deeply $json, { id => $member->id, phone => '5551112222', }, '. . . and it returns the right results' or diag explain $json;
     };
 });
 
