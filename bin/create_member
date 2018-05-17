@@ -1,0 +1,22 @@
+#! /usr/bin/env perl
+
+use Dancer2;
+use Dancer2::Plugin::DBIC;
+
+use autodie;
+no indirect 'fatal';
+
+use FindBin;
+use lib $FindBin::Bin =~ s{/bin$}{/lib}r;
+
+use Try::Tiny;
+
+$|++;
+
+my ($phone) = @ARGV;
+
+$phone =~ s/\D//g;
+
+my $member = schema->resultset('Member')->create({ phone => $phone, });
+
+print "Created member @{[ encode_json($member->as_hash) ]}\n";
