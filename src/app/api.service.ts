@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 export interface User {}
+export interface Member {}
 
 @Injectable()
 export class Api {
@@ -56,6 +57,32 @@ export class Api {
                         switch (err.status) {
                             case 403:
                                 observer.error(err.error);
+                                break;
+                            default:
+                                console.log("Unknown HTTP response", err);
+                                observer.error({ code: 'unknown', });
+                                break;
+                        }
+                    },
+                })
+            ;
+        });
+    }
+
+    member(phone) {
+        return new Observable<Member|void>(observer => {
+            this._http
+                .get('/api/member', { params: { phone: phone, }, })
+                .subscribe({
+                    next: res => { observer.next(res); observer.complete(); },
+                    error: err => {
+                        switch (err.status) {
+                            case 400:
+                                observer.error(err.error);
+                                break;
+                            case 404:
+                                observer.next(undefined);
+                                observer.complete();
                                 break;
                             default:
                                 console.log("Unknown HTTP response", err);

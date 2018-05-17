@@ -1,4 +1,12 @@
 <section id="member">
     <h1>Members</h1>
-    <span class="entry">Phone #: <input id="member-phone" type="tel"></span>
+    <div *ngIf="state == 'need_member'">
+        <span class="entry">Phone #: <input id="member-phone" type="tel" [(ngModel)]="phone"></span>
+        <button id="member_checkin" (click)="checkin()">Check in</button>
+        <div class="error">{{error_message}}</div>
+    </div>
+    <div *ngIf="state == 'have_member'">
+        Checkboxes for checking off members
+        <button id="change_member" (click)="change_member()">Change member</button>
+    </div>
 </section>
