@@ -8,7 +8,7 @@ class Ecclesia::Greeter::Stores::Schema::Result::Member extends DBIx::Class::Cor
     unique_column phone => { data_type => 'text', length => 10, };
 
     method as_hash {
-        return { id => $self->id, phone => $self->phone, };
+        return { id => $self->id, phone => [ $self->phone, ], };
     }
 }
 
