@@ -2,6 +2,7 @@ DBD::Pg
 DBIx::Class
 DBIx::Class::Candy
 DBIx::Class::DeploymentHandler
+DBIx::Class::Migration
 DBIx::Class::EncodedColumn
 Dancer2
 Dancer2::Plugin::DBIC

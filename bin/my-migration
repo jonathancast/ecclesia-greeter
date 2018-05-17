@@ -1,0 +1,4 @@
+#! /bin/bash
+
+export DBIC_MIGRATION_SCHEMA_CLASS=Ecclesia::Greeter::Stores::Schema
+exec dbic-migration -Ilib --dsn dbi:Pg:dbname=dev --target_dir sql "$@"
