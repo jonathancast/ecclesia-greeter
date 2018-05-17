@@ -23,7 +23,7 @@ Vagrant.configure("2") do |config|
         web.vm.network "forwarded_port", guest: 5000, host: 18080
 
         web.vm.provision :shell, inline: "apt-get install -y curl libc6-dev postgresql-client libpq-dev"
-        web.vm.provision :shell, privileged: false, inline: "echo 'export PGHOST=#{PRIVATE_NETWORK}.4' >> $HOME/.bashrc"
+        web.vm.provision :shell, privileged: false, inline: "echo 'export PGHOST=#{PRIVATE_NETWORK}.4' >> $HOME/.profile"
         web.vm.provision :shell, privileged: false, inline: "echo '*:*:*:vagrant:vagrdbpass' >> $HOME/.pgpass"
         web.vm.provision :shell, privileged: false, inline: "chmod 0600 $HOME/.pgpass"
         web.vm.provision :shell, privileged: false, inline: "cd /vagrant && ./INSTALL"
