@@ -55,7 +55,9 @@ with_login(sub($sut) {
     };
 
     subtest 'Member in the database' => sub {
-        my $member = schema->resultset('Member')->create({});
+        my $member = schema->resultset('Member')->create({
+            full_name => 'Ward Cleaver',
+        });
         my $phone = $member->create_related(phone => {
             number => '5551112222',
         });
@@ -64,7 +66,7 @@ with_login(sub($sut) {
         is $res->code, 200, 'Finding an existing member returns a 200';
         my $json = try { decode_json($res->decoded_content) };
         isnt $json, undef, '. . . and it returns valid JSON' or diag $res->decoded_content;
-        is_deeply $json, { id => $member->id, phone => [ '5551112222', ], }, '. . . and it returns the right results' or diag explain $json;
+        is_deeply $json, { id => $member->id, full_name => 'Ward Cleaver', phone => [ '5551112222', ], }, '. . . and it returns the right results' or diag explain $json;
     };
 });
 

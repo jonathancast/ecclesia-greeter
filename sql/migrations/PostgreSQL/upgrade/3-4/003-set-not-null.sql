@@ -1,0 +1,1 @@
+ALTER TABLE members ALTER COLUMN full_name SET NOT NULL;
