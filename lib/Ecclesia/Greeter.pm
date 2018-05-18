@@ -67,7 +67,7 @@ prefix '/api' => sub {
             return { status => 'bad_request', code => 'badphone', msg => qq{The phone number '$phone' is not a 10-digit string}, need => { phone => 'phone-number', }, };
         }
 
-        my $member = schema->resultset('Member')->find({ phone => $phone, });
+        my $member = schema->resultset('Phone')->search_rs({ number => $phone, })->search_related_rs('member')->single();
         if ($member) {
             return $member->as_hash;
         } else {

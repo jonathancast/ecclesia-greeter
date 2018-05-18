@@ -2,8 +2,9 @@ DBD::Pg
 DBIx::Class
 DBIx::Class::Candy
 DBIx::Class::DeploymentHandler
-DBIx::Class::Migration
 DBIx::Class::EncodedColumn
+DBIx::Class::Migration
+DBIx::Class::Relationship::Abbreviate
 Dancer2
 Dancer2::Plugin::DBIC
 Dancer2::Session::JSON

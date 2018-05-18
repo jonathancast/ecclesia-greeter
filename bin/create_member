@@ -17,6 +17,7 @@ my ($phone) = @ARGV;
 
 $phone =~ s/\D//g;
 
-my $member = schema->resultset('Member')->create({ phone => $phone, });
+my $member = schema->resultset('Member')->create({});
+$member->create_related(phone => { number => $phone, });
 
 print "Created member @{[ encode_json($member->as_hash) ]}\n";

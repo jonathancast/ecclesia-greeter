@@ -69,8 +69,7 @@ ALTER SEQUENCE dbix_class_deploymenthandler_versions_id_seq OWNED BY dbix_class_
 --
 
 CREATE TABLE members (
-    id integer NOT NULL,
-    phone text NOT NULL
+    id integer NOT NULL
 );
 
 
@@ -95,6 +94,40 @@ ALTER TABLE members_id_seq OWNER TO vagrant;
 --
 
 ALTER SEQUENCE members_id_seq OWNED BY members.id;
+
+
+--
+-- Name: phones; Type: TABLE; Schema: public; Owner: vagrant; Tablespace: 
+--
+
+CREATE TABLE phones (
+    id integer NOT NULL,
+    number text NOT NULL,
+    member_id integer NOT NULL
+);
+
+
+ALTER TABLE phones OWNER TO vagrant;
+
+--
+-- Name: phones_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE phones_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE phones_id_seq OWNER TO vagrant;
+
+--
+-- Name: phones_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE phones_id_seq OWNED BY phones.id;
 
 
 --
@@ -149,6 +182,13 @@ ALTER TABLE ONLY members ALTER COLUMN id SET DEFAULT nextval('members_id_seq'::r
 -- Name: id; Type: DEFAULT; Schema: public; Owner: vagrant
 --
 
+ALTER TABLE ONLY phones ALTER COLUMN id SET DEFAULT nextval('phones_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
@@ -158,6 +198,7 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 
 COPY dbix_class_deploymenthandler_versions (id, version, ddl, upgrade_sql) FROM stdin;
 1	2	CREATE TABLE "dbix_class_deploymenthandler_versions" ( "id" serial NOT NULL, "version" character varying(50) NOT NULL, "ddl" text, "upgrade_sql" text, PRIMARY KEY ("id"), CONSTRAINT "dbix_class_deploymenthandler_versions_version" UNIQUE ("version") )CREATE TABLE "members" ( "id" serial NOT NULL, "phone" text NOT NULL, PRIMARY KEY ("id"), CONSTRAINT "members_phone" UNIQUE ("phone") )\nCREATE TABLE "users" ( "id" serial NOT NULL, "login_id" text NOT NULL, "password" text NOT NULL, PRIMARY KEY ("id"), CONSTRAINT "users_login_id" UNIQUE ("login_id") )	\N
+3	3		CREATE TABLE "phones" ( "id" serial NOT NULL, "number" text NOT NULL, "member_id" integer NOT NULL, PRIMARY KEY ("id"), CONSTRAINT "phones_number" UNIQUE ("number") )\nCREATE INDEX "phones_idx_member_id" on "phones" ("member_id")\nALTER TABLE "phones" ADD CONSTRAINT "phones_fk_member_id" FOREIGN KEY ("member_id") REFERENCES "members" ("id") ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE\nALTER TABLE members DROP CONSTRAINT members_phone\ninsert into phones (member_id, number) select id, phone from members\nALTER TABLE members DROP COLUMN phone
 \.
 
 
@@ -165,15 +206,15 @@ COPY dbix_class_deploymenthandler_versions (id, version, ddl, upgrade_sql) FROM 
 -- Name: dbix_class_deploymenthandler_versions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('dbix_class_deploymenthandler_versions_id_seq', 1, true);
+SELECT pg_catalog.setval('dbix_class_deploymenthandler_versions_id_seq', 3, true);
 
 
 --
 -- Data for Name: members; Type: TABLE DATA; Schema: public; Owner: vagrant
 --
 
-COPY members (id, phone) FROM stdin;
-1	5551112222
+COPY members (id) FROM stdin;
+1
 \.
 
 
@@ -182,6 +223,22 @@ COPY members (id, phone) FROM stdin;
 --
 
 SELECT pg_catalog.setval('members_id_seq', 1, true);
+
+
+--
+-- Data for Name: phones; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY phones (id, number, member_id) FROM stdin;
+1	5551112222	1
+\.
+
+
+--
+-- Name: phones_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('phones_id_seq', 1, true);
 
 
 --
@@ -216,19 +273,27 @@ ALTER TABLE ONLY dbix_class_deploymenthandler_versions
 
 
 --
--- Name: members_phone; Type: CONSTRAINT; Schema: public; Owner: vagrant; Tablespace: 
---
-
-ALTER TABLE ONLY members
-    ADD CONSTRAINT members_phone UNIQUE (phone);
-
-
---
 -- Name: members_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant; Tablespace: 
 --
 
 ALTER TABLE ONLY members
     ADD CONSTRAINT members_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: phones_number; Type: CONSTRAINT; Schema: public; Owner: vagrant; Tablespace: 
+--
+
+ALTER TABLE ONLY phones
+    ADD CONSTRAINT phones_number UNIQUE (number);
+
+
+--
+-- Name: phones_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant; Tablespace: 
+--
+
+ALTER TABLE ONLY phones
+    ADD CONSTRAINT phones_pkey PRIMARY KEY (id);
 
 
 --
@@ -245,6 +310,21 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: phones_idx_member_id; Type: INDEX; Schema: public; Owner: vagrant; Tablespace: 
+--
+
+CREATE INDEX phones_idx_member_id ON phones USING btree (member_id);
+
+
+--
+-- Name: phones_fk_member_id; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY phones
+    ADD CONSTRAINT phones_fk_member_id FOREIGN KEY (member_id) REFERENCES members(id) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE;
 
 
 --

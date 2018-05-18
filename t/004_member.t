@@ -55,8 +55,9 @@ with_login(sub($sut) {
     };
 
     subtest 'Member in the database' => sub {
-        my $member = schema->resultset('Member')->create({
-            phone => '5551112222',
+        my $member = schema->resultset('Member')->create({});
+        my $phone = $member->create_related(phone => {
+            number => '5551112222',
         });
 
         my $res = $sut->request(GET '/api/member?phone=555-111-2222');
