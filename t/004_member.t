@@ -55,18 +55,50 @@ with_login(sub($sut) {
     };
 
     subtest 'Member in the database' => sub {
-        my $member = schema->resultset('Member')->create({
+        my $family = schema->resultset('Family')->create({});
+        my $ward = $family->create_related(members => {
             full_name => 'Ward Cleaver',
         });
-        my $phone = $member->create_related(phone => {
+        my $phone = $ward->create_related(phone => {
             number => '5551112222',
+        });
+        my $june = $family->create_related(members => {
+            full_name => 'June Cleaver',
+        });
+        my $beaver = $family->create_related(members => {
+            full_name => 'Beaver Cleaver',
         });
 
         my $res = $sut->request(GET '/api/member?phone=555-111-2222');
         is $res->code, 200, 'Finding an existing member returns a 200';
         my $json = try { decode_json($res->decoded_content) };
         isnt $json, undef, '. . . and it returns valid JSON' or diag $res->decoded_content;
-        is_deeply $json, { id => $member->id, full_name => 'Ward Cleaver', phone => [ '5551112222', ], }, '. . . and it returns the right results' or diag explain $json;
+        my $expected = {
+            id => $ward->id,
+            full_name => 'Ward Cleaver',
+            phone => [ '5551112222', ],
+            family => {
+                id => $family->id,
+                members => [
+                    {
+                        id => $ward->id,
+                        full_name => 'Ward Cleaver',
+                        phone => [ '5551112222', ],
+                    },
+                    {
+                        id => $june->id,
+                        full_name => 'June Cleaver',
+                        phone => [],
+                    },
+                    {
+                        id => $beaver->id,
+                        full_name => 'Beaver Cleaver',
+                        phone => [],
+                    },
+                ],
+            },
+        };
+        is_deeply $json, $expected, '. . . and it returns the right results' or diag explain $json;
     };
 });
 

@@ -3,6 +3,7 @@ DBIx::Class
 DBIx::Class::Candy
 DBIx::Class::DeploymentHandler
 DBIx::Class::EncodedColumn
+DBIx::Class::Helpers
 DBIx::Class::Migration
 DBIx::Class::Relationship::Abbreviate
 Dancer2

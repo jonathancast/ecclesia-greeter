@@ -1,0 +1,38 @@
+#! /usr/bin/env perl
+
+use Dancer2;
+use Dancer2::Plugin::DBIC;
+
+use autodie;
+no indirect 'fatal';
+
+use FindBin;
+use lib $FindBin::Bin =~ s{/bin$}{/lib}r;
+
+use Try::Tiny;
+
+$|++;
+
+my $family = schema->resultset('Family')->create({});
+
+print "What is the head of household? ";
+chomp(my $name = <>);
+
+print "What is the phone number? ";
+chomp(my $phone = <>);
+
+$phone =~ s/\D//g;
+
+my $member = $family->create_related(members => { full_name => $name, });
+$member->create_related(phone => { number => $phone, });
+
+while (1) {
+    print "Enter additional family member name (ENTER to stop): ";
+    chomp($name = <>);
+    $name =~ s/^\s*//;
+    $name =~ s/\s*$//;
+    last unless $name;
+    $family->create_related(members => { full_name => $name, });
+}
+
+print "Created family @{[ encode_json($family->as_hash) ]}\n";

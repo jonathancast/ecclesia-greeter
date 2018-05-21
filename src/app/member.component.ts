@@ -11,7 +11,8 @@ import { Api, Member } from './api.service';
 export class MemberComponent {
     state = 'need_member';
     phone = '';
-    member: Member | void = undefined;
+    member: Member = undefined;
+    member_here: { [key:number]:boolean; } = {};
     error_message = '';
 
     constructor(private _api: Api) { }
@@ -26,6 +27,9 @@ export class MemberComponent {
                 } else {
                     this.state = 'have_member';
                     this.member = res;
+                    this.member_here = {};
+                    this.member.family.members.forEach(m => this.member_here[m.id] = false);
+                    this.member_here[this.member.id] = true;
                 }
             },
             error: err => {

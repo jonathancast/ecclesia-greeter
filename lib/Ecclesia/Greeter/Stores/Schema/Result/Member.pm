@@ -7,7 +7,9 @@ class Ecclesia::Greeter::Stores::Schema::Result::Member extends DBIx::Class::Cor
     primary_column id => { data_type => 'int', is_auto_increment => 1, };
 
     column full_name => { data_type => 'text', length => '1024', null => false, };
+    column family_id => { data_type => 'int', null => false, };
 
+    belongs_to family => result('Family'), { 'foreign.id' => 'self.family_id', };
     has_many phone => result('Phone'), { 'foreign.member_id' => 'self.id', };
 
     method as_hash {

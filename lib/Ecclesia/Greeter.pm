@@ -67,9 +67,11 @@ prefix '/api' => sub {
             return { status => 'bad_request', code => 'badphone', msg => qq{The phone number '$phone' is not a 10-digit string}, need => { phone => 'phone-number', }, };
         }
 
-        my $member = schema->resultset('Phone')->search_rs({ number => $phone, })->search_related_rs('member')->single();
+        my $member = schema->resultset('Phone')->search_rs({ number => $phone, })->search_related_rs('member')->prefetch({ 'family' => 'members', })->next();
         if ($member) {
-            return $member->as_hash;
+            my $res = $member->as_hash;
+            $res->{family} = $member->family->as_hash;
+            return $res;
         } else {
             status 'not_found';
             return { status => 'not_found', code => 'notfound', msg => qq{No member found with phone number $phone}, };

@@ -3,7 +3,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 export interface User {}
-export interface Member {}
+export interface SimpleMember {
+    id: number;
+}
+export interface Family {
+    members: Array<SimpleMember>;
+}
+export interface Member {
+    id: number;
+    family: Family
+}
 
 @Injectable()
 export class Api {
@@ -70,11 +79,11 @@ export class Api {
     }
 
     member(phone) {
-        return new Observable<Member|void>(observer => {
+        return new Observable<Member>(observer => {
             this._http
                 .get('/api/member', { params: { phone: phone, }, })
                 .subscribe({
-                    next: res => { observer.next(res); observer.complete(); },
+                    next: (res : Member) => { observer.next(res); observer.complete(); },
                     error: err => {
                         switch (err.status) {
                             case 400:
