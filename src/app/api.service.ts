@@ -103,4 +103,23 @@ export class Api {
             ;
         });
     }
+
+    checkin(ids) {
+        return new Observable(observer => {
+            this._http
+                .post('/api/checkin', { members: { ids: ids, }, })
+                .subscribe({
+                    next: res => { observer.next(res); observer.complete(); },
+                    error: err => {
+                        switch (err.status) {
+                            default:
+                                console.log("Unknown HTTP response", err);
+                                observer.error({ code: 'unknown', });
+                                break;
+                        }
+                    },
+                })
+            ;
+        });
+    }
 }

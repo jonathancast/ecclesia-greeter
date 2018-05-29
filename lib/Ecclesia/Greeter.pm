@@ -5,6 +5,8 @@ use Dancer2::Plugin::DBIC;
 
 use autodie;
 
+use DateTime;
+
 set serializer => 'JSON';
 
 get '/' => sub { send_file '/index.html' };
@@ -76,6 +78,27 @@ prefix '/api' => sub {
             status 'not_found';
             return { status => 'not_found', code => 'notfound', msg => qq{No member found with phone number $phone}, };
         }
+    };
+
+    post '/checkin' => sub {
+        my $members = body_parameters->get('members');
+
+        unless ($members && ref($members) eq 'HASH') {
+            status 'bad_request';
+            return { status => 'bad_request', code => 'noids', msg => 'You must supply an array of member ids', },
+        }
+
+        my $ids = $members->{ids};
+
+        unless ($ids && ref($ids) eq 'ARRAY') {
+            status 'bad_request';
+            return { status => 'bad_request', code => 'noids', msg => 'You must supply an array of member ids', },
+        }
+
+        my $now = DateTime->now(time_zone => config->{time_zone} // 'America/Chicago');
+        schema->resultset('Checkin')->create({ date => $now, member_id => $_, }) for @$ids;
+
+        return { status => 'ok', };
     };
 };
 

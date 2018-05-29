@@ -30,6 +30,40 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: checkins; Type: TABLE; Schema: public; Owner: vagrant; Tablespace: 
+--
+
+CREATE TABLE checkins (
+    id integer NOT NULL,
+    date timestamp with time zone NOT NULL,
+    member_id integer NOT NULL
+);
+
+
+ALTER TABLE checkins OWNER TO vagrant;
+
+--
+-- Name: checkins_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE checkins_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE checkins_id_seq OWNER TO vagrant;
+
+--
+-- Name: checkins_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE checkins_id_seq OWNED BY checkins.id;
+
+
+--
 -- Name: dbix_class_deploymenthandler_versions; Type: TABLE; Schema: public; Owner: vagrant; Tablespace: 
 --
 
@@ -202,6 +236,13 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: vagrant
 --
 
+ALTER TABLE ONLY checkins ALTER COLUMN id SET DEFAULT nextval('checkins_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
 ALTER TABLE ONLY dbix_class_deploymenthandler_versions ALTER COLUMN id SET DEFAULT nextval('dbix_class_deploymenthandler_versions_id_seq'::regclass);
 
 
@@ -234,6 +275,21 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 
 
 --
+-- Data for Name: checkins; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY checkins (id, date, member_id) FROM stdin;
+\.
+
+
+--
+-- Name: checkins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('checkins_id_seq', 1, false);
+
+
+--
 -- Data for Name: dbix_class_deploymenthandler_versions; Type: TABLE DATA; Schema: public; Owner: vagrant
 --
 
@@ -242,6 +298,7 @@ COPY dbix_class_deploymenthandler_versions (id, version, ddl, upgrade_sql) FROM 
 3	3		CREATE TABLE "phones" ( "id" serial NOT NULL, "number" text NOT NULL, "member_id" integer NOT NULL, PRIMARY KEY ("id"), CONSTRAINT "phones_number" UNIQUE ("number") )\nCREATE INDEX "phones_idx_member_id" on "phones" ("member_id")\nALTER TABLE "phones" ADD CONSTRAINT "phones_fk_member_id" FOREIGN KEY ("member_id") REFERENCES "members" ("id") ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLE\nALTER TABLE members DROP CONSTRAINT members_phone\ninsert into phones (member_id, number) select id, phone from members\nALTER TABLE members DROP COLUMN phone
 4	4		ALTER TABLE members ADD COLUMN full_name text NULLALTER TABLE members ALTER COLUMN full_name SET NOT NULL
 5	5		CREATE TABLE "families" ( "id" serial NOT NULL, PRIMARY KEY ("id") )\nALTER TABLE members ADD COLUMN family_id integer NULL\nCREATE INDEX members_idx_family_id on members (family_id)\nALTER TABLE members ADD CONSTRAINT members_fk_family_id FOREIGN KEY (family_id) REFERENCES families (id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLEalter table members alter column family_id set not null
+7	6		CREATE TABLE "checkins" ( "id" serial NOT NULL, "date" timestamptz NOT NULL, "member_id" integer NOT NULL, PRIMARY KEY ("id") )\nCREATE INDEX "checkins_idx_member_id" on "checkins" ("member_id")\nALTER TABLE "checkins" ADD CONSTRAINT "checkins_fk_member_id" FOREIGN KEY ("member_id") REFERENCES "members" ("id") DEFERRABLE
 \.
 
 
@@ -249,7 +306,7 @@ COPY dbix_class_deploymenthandler_versions (id, version, ddl, upgrade_sql) FROM 
 -- Name: dbix_class_deploymenthandler_versions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('dbix_class_deploymenthandler_versions_id_seq', 5, true);
+SELECT pg_catalog.setval('dbix_class_deploymenthandler_versions_id_seq', 7, true);
 
 
 --
@@ -257,7 +314,7 @@ SELECT pg_catalog.setval('dbix_class_deploymenthandler_versions_id_seq', 5, true
 --
 
 COPY families (id) FROM stdin;
-1
+2
 \.
 
 
@@ -265,7 +322,7 @@ COPY families (id) FROM stdin;
 -- Name: families_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('families_id_seq', 1, true);
+SELECT pg_catalog.setval('families_id_seq', 2, true);
 
 
 --
@@ -273,7 +330,9 @@ SELECT pg_catalog.setval('families_id_seq', 1, true);
 --
 
 COPY members (id, full_name, family_id) FROM stdin;
-1	Ward Cleaver	1
+2	Ward Cleaver	2
+3	June Cleaver	2
+4	Beaver Cleaver	2
 \.
 
 
@@ -281,7 +340,7 @@ COPY members (id, full_name, family_id) FROM stdin;
 -- Name: members_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('members_id_seq', 1, true);
+SELECT pg_catalog.setval('members_id_seq', 4, true);
 
 
 --
@@ -289,7 +348,7 @@ SELECT pg_catalog.setval('members_id_seq', 1, true);
 --
 
 COPY phones (id, number, member_id) FROM stdin;
-1	5551112222	1
+2	5551112222	2
 \.
 
 
@@ -297,7 +356,7 @@ COPY phones (id, number, member_id) FROM stdin;
 -- Name: phones_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('phones_id_seq', 1, true);
+SELECT pg_catalog.setval('phones_id_seq', 2, true);
 
 
 --
@@ -313,6 +372,14 @@ COPY users (id, login_id, password) FROM stdin;
 --
 
 SELECT pg_catalog.setval('users_id_seq', 1, false);
+
+
+--
+-- Name: checkins_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant; Tablespace: 
+--
+
+ALTER TABLE ONLY checkins
+    ADD CONSTRAINT checkins_pkey PRIMARY KEY (id);
 
 
 --
@@ -380,6 +447,13 @@ ALTER TABLE ONLY users
 
 
 --
+-- Name: checkins_idx_member_id; Type: INDEX; Schema: public; Owner: vagrant; Tablespace: 
+--
+
+CREATE INDEX checkins_idx_member_id ON checkins USING btree (member_id);
+
+
+--
 -- Name: members_idx_family_id; Type: INDEX; Schema: public; Owner: vagrant; Tablespace: 
 --
 
@@ -391,6 +465,14 @@ CREATE INDEX members_idx_family_id ON members USING btree (family_id);
 --
 
 CREATE INDEX phones_idx_member_id ON phones USING btree (member_id);
+
+
+--
+-- Name: checkins_fk_member_id; Type: FK CONSTRAINT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY checkins
+    ADD CONSTRAINT checkins_fk_member_id FOREIGN KEY (member_id) REFERENCES members(id) DEFERRABLE;
 
 
 --

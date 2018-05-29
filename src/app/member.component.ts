@@ -57,4 +57,19 @@ export class MemberComponent {
         this.state = 'need_member';
         this.phone = '';
     }
+
+    finish_checkin() {
+        let all_here = this.member.family.members.map(m => m.id).filter(id => this.member_here[id]);
+        this._api.checkin(all_here).subscribe({
+            next: res => this.change_member(),
+            error: err => {
+                switch (err.code) {
+                    default:
+                        console.log("Unknown error", err);
+                        this.error_message = "Sorry, couldn't check in for some rason; guru hint: " + err.code;
+                        break;
+                }
+            },
+        });
+    }
 }
