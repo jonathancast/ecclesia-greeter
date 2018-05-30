@@ -7,6 +7,8 @@ use autodie;
 
 use DateTime;
 
+use Scalar::Util qw/ looks_like_number /;
+
 set serializer => 'JSON';
 
 get '/' => sub { send_file '/index.html' };
@@ -97,6 +99,36 @@ prefix '/api' => sub {
 
         my $now = DateTime->now(time_zone => config->{time_zone} // 'America/Chicago');
         schema->resultset('Checkin')->create({ date => $now, member_id => $_, }) for @$ids;
+
+        return { status => 'ok', };
+    };
+
+    post '/visitor/signin' => sub {
+        my $visitor = body_parameters->get('visitor');
+
+        unless ($visitor && ref($visitor) eq 'HASH') {
+            status 'bad_request';
+            return { status => 'bad_request', code => 'novisitor', msg => 'You must supply a visitor hash', },
+        }
+
+        unless (defined $visitor->{name} && length($visitor->{name})) {
+            status 'bad_request';
+            return { status => 'bad_request', code => 'noname', msg => 'You must supply a visitor name', },
+        }
+
+        unless (defined $visitor->{number} && looks_like_number($visitor->{number}) && $visitor->{number} > 0) {
+            status 'bad_request';
+            return { status => 'bad_request', code => 'nonumber', msg => 'You must supply a number of visitors', },
+        }
+
+        unless (defined $visitor->{num_children} && looks_like_number($visitor->{num_children}) && $visitor->{num_children} >= 0) {
+            status 'bad_request';
+            return { status => 'bad_request', code => 'nonum_children', msg => 'You must supply a number of children', },
+        }
+
+        my $now = DateTime->now(time_zone => config->{time_zone} // 'America/Chicago');
+        delete $visitor->{id};
+        schema->resultset('Visitor')->create({ date => $now, %$visitor, });
 
         return { status => 'ok', };
     };

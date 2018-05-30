@@ -13,6 +13,31 @@ export interface Member {
     id: number;
     family: Family
 }
+export interface Visitor {
+    name: string;
+    phone: string;
+    email: string;
+    address: string;
+    address2: string;
+    city: string;
+    state: string;
+    number: number;
+    num_children: number;
+}
+
+export function empty_visitor() : Visitor {
+    return {
+        name: undefined,
+        phone: undefined,
+        email: undefined,
+        address: undefined,
+        address2: undefined,
+        city: undefined,
+        state: undefined,
+        number: undefined,
+        num_children: undefined,
+    };
+}
 
 @Injectable()
 export class Api {
@@ -108,6 +133,25 @@ export class Api {
         return new Observable(observer => {
             this._http
                 .post('/api/checkin', { members: { ids: ids, }, })
+                .subscribe({
+                    next: res => { observer.next(res); observer.complete(); },
+                    error: err => {
+                        switch (err.status) {
+                            default:
+                                console.log("Unknown HTTP response", err);
+                                observer.error({ code: 'unknown', });
+                                break;
+                        }
+                    },
+                })
+            ;
+        });
+    }
+
+    visitor_signin(visitor) {
+        return new Observable(observer => {
+            this._http
+                .post('/api/visitor/signin', { visitor: visitor, })
                 .subscribe({
                     next: res => { observer.next(res); observer.complete(); },
                     error: err => {

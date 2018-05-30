@@ -233,6 +233,48 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
+-- Name: visitors; Type: TABLE; Schema: public; Owner: vagrant; Tablespace: 
+--
+
+CREATE TABLE visitors (
+    id integer NOT NULL,
+    date timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    phone text,
+    email text,
+    address text,
+    address2 text,
+    city text,
+    state text,
+    number integer NOT NULL,
+    num_children integer NOT NULL
+);
+
+
+ALTER TABLE visitors OWNER TO vagrant;
+
+--
+-- Name: visitors_id_seq; Type: SEQUENCE; Schema: public; Owner: vagrant
+--
+
+CREATE SEQUENCE visitors_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE visitors_id_seq OWNER TO vagrant;
+
+--
+-- Name: visitors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: vagrant
+--
+
+ALTER SEQUENCE visitors_id_seq OWNED BY visitors.id;
+
+
+--
 -- Name: id; Type: DEFAULT; Schema: public; Owner: vagrant
 --
 
@@ -275,10 +317,19 @@ ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regcl
 
 
 --
+-- Name: id; Type: DEFAULT; Schema: public; Owner: vagrant
+--
+
+ALTER TABLE ONLY visitors ALTER COLUMN id SET DEFAULT nextval('visitors_id_seq'::regclass);
+
+
+--
 -- Data for Name: checkins; Type: TABLE DATA; Schema: public; Owner: vagrant
 --
 
 COPY checkins (id, date, member_id) FROM stdin;
+1	2018-05-28 20:21:32+00	2
+2	2018-05-28 20:21:32+00	4
 \.
 
 
@@ -286,7 +337,7 @@ COPY checkins (id, date, member_id) FROM stdin;
 -- Name: checkins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('checkins_id_seq', 1, false);
+SELECT pg_catalog.setval('checkins_id_seq', 2, true);
 
 
 --
@@ -299,6 +350,7 @@ COPY dbix_class_deploymenthandler_versions (id, version, ddl, upgrade_sql) FROM 
 4	4		ALTER TABLE members ADD COLUMN full_name text NULLALTER TABLE members ALTER COLUMN full_name SET NOT NULL
 5	5		CREATE TABLE "families" ( "id" serial NOT NULL, PRIMARY KEY ("id") )\nALTER TABLE members ADD COLUMN family_id integer NULL\nCREATE INDEX members_idx_family_id on members (family_id)\nALTER TABLE members ADD CONSTRAINT members_fk_family_id FOREIGN KEY (family_id) REFERENCES families (id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLEalter table members alter column family_id set not null
 7	6		CREATE TABLE "checkins" ( "id" serial NOT NULL, "date" timestamptz NOT NULL, "member_id" integer NOT NULL, PRIMARY KEY ("id") )\nCREATE INDEX "checkins_idx_member_id" on "checkins" ("member_id")\nALTER TABLE "checkins" ADD CONSTRAINT "checkins_fk_member_id" FOREIGN KEY ("member_id") REFERENCES "members" ("id") DEFERRABLE
+8	7		CREATE TABLE "visitors" ( "id" serial NOT NULL, "date" timestamptz NOT NULL, "name" text NOT NULL, "phone" text, "email" text, "address" text, "address2" text, "city" text, "state" text, "number" integer NOT NULL, "num_children" integer NOT NULL, PRIMARY KEY ("id") )
 \.
 
 
@@ -306,7 +358,7 @@ COPY dbix_class_deploymenthandler_versions (id, version, ddl, upgrade_sql) FROM 
 -- Name: dbix_class_deploymenthandler_versions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('dbix_class_deploymenthandler_versions_id_seq', 7, true);
+SELECT pg_catalog.setval('dbix_class_deploymenthandler_versions_id_seq', 8, true);
 
 
 --
@@ -372,6 +424,22 @@ COPY users (id, login_id, password) FROM stdin;
 --
 
 SELECT pg_catalog.setval('users_id_seq', 1, false);
+
+
+--
+-- Data for Name: visitors; Type: TABLE DATA; Schema: public; Owner: vagrant
+--
+
+COPY visitors (id, date, name, phone, email, address, address2, city, state, number, num_children) FROM stdin;
+1	2018-05-30 08:52:48+00	John Smith	\N	\N	\N	\N	\N	\N	1	0
+\.
+
+
+--
+-- Name: visitors_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
+--
+
+SELECT pg_catalog.setval('visitors_id_seq', 1, true);
 
 
 --
@@ -444,6 +512,14 @@ ALTER TABLE ONLY users
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: visitors_pkey; Type: CONSTRAINT; Schema: public; Owner: vagrant; Tablespace: 
+--
+
+ALTER TABLE ONLY visitors
+    ADD CONSTRAINT visitors_pkey PRIMARY KEY (id);
 
 
 --

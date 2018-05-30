@@ -1,0 +1,37 @@
+{
+   "sets" : [
+      {
+         "quantity" : "all",
+         "class" : "Visitor"
+      },
+      {
+         "quantity" : "all",
+         "class" : "Phone"
+      },
+      {
+         "quantity" : "all",
+         "class" : "Family"
+      },
+      {
+         "quantity" : "all",
+         "class" : "User"
+      },
+      {
+         "class" : "Checkin",
+         "quantity" : "all"
+      },
+      {
+         "quantity" : "all",
+         "class" : "Member"
+      }
+   ],
+   "might_have" : {
+      "fetch" : 0
+   },
+   "belongs_to" : {
+      "fetch" : 0
+   },
+   "has_many" : {
+      "fetch" : 0
+   }
+}
