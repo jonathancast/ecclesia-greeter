@@ -8,7 +8,7 @@ import { Api } from './api.service';
     providers: [Api],
 })
 export class AppComponent {
-    title = 'Ecclesia Greeter';
+    title = 'Caleo Greeter';
     logged_in = false;
     constructor(private _api: Api) { }
     ngOnInit(): void {
