@@ -1,0 +1,4 @@
+#header { display: table; }
+.row { display: table-row; }
+.item { display: table-cell; }
+div.item.links { float: right; white-space: nowrap; }
