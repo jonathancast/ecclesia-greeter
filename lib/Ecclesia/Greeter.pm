@@ -15,7 +15,7 @@ get '/' => sub { send_file '/index.html' };
 
 get '/config' => sub {
     return {
-        name => config->{name} // 'Ecclesia',
+        name => config->{name} // 'Caleo',
     };
 };
 
