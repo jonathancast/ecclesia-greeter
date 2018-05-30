@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login.component';
 import { MemberComponent } from './member.component';
 import { VisitorComponent } from './visitor.component';
+import { FooterComponent } from './footer.component';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { VisitorComponent } from './visitor.component';
     LoginComponent,
     MemberComponent,
     VisitorComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
