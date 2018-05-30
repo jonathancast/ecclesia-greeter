@@ -66,7 +66,7 @@ export class MemberComponent {
                 switch (err.code) {
                     default:
                         console.log("Unknown error", err);
-                        this.error_message = "Sorry, couldn't check in for some rason; guru hint: " + err.code;
+                        this.error_message = "Sorry, couldn't check in for some reason; guru hint: " + err.code;
                         break;
                 }
             },
