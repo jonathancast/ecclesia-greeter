@@ -7,6 +7,7 @@ DBIx::Class::Helpers
 DBIx::Class::Migration
 DBIx::Class::Relationship::Abbreviate
 Dancer2
+Dancer2::Logger::Note
 Dancer2::Plugin::DBIC
 Dancer2::Session::JSON
 File::Temp
