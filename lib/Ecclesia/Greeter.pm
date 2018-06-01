@@ -132,6 +132,10 @@ prefix '/api' => sub {
 
         return { status => 'ok', };
     };
+
+    get '/attendance/dates' => sub {
+        return [ schema->resultset('Checkin')->order_by({ -desc => 'date', })->distinct->get_column('date')->all() ];
+    };
 };
 
 sub missing_param {
