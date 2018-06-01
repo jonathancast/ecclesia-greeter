@@ -12,6 +12,8 @@ class Ecclesia::Greeter::Stores::Schema::Result::Member extends DBIx::Class::Cor
     belongs_to family => result('Family'), { 'foreign.id' => 'self.family_id', };
     has_many phone => result('Phone'), { 'foreign.member_id' => 'self.id', };
 
+    has_many checkins => result('Checkin'), { 'foreign.member_id' => 'self.id', };
+
     method as_hash {
         return { id => $self->id, full_name => $self->full_name, phone => [ map { $_->number } $self->phone->all(), ], };
     }
