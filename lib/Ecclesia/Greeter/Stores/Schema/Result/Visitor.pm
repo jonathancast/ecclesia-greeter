@@ -3,6 +3,8 @@ use Moops;
 class Ecclesia::Greeter::Stores::Schema::Result::Visitor extends DBIx::Class::Core, DBIx::Class::InflateColumn::DateTime {
     use DBIx::Class::Candy -autotable => v1;
 
+    __PACKAGE__->load_components(qw/ Helper::Row::SelfResultSet /);
+
     primary_column id => { data_type => 'int', is_auto_increment => 1, };
 
     column date => { data_type => 'date',  inflate_datetime => 1, is_nullable => false, };

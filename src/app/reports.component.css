@@ -1,1 +1,10 @@
-.options { text-align: center; }
+.options {
+    text-align: center;
+    border-bottom: black;
+    border-width: 1px;
+    border-bottom-style: solid;
+    padding-bottom: 0.5em;
+}
+.option { pad-left: 1em; }
+.go { float: right; }
+.go button { padding-top: 0; }

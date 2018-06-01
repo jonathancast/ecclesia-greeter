@@ -189,4 +189,31 @@ export class Api {
             ;
         });
     }
+
+    attendance(d) {
+        return new Observable(observer => {
+            this._http
+                .get('/api/attendance', { params: { date: d, }, })
+                .subscribe({
+                    next: (res: { date: string; members_present: SimpleMember; members_absent: SimpleMember; visitors: Visitor; })  => {
+                        observer.next({
+                            date: moment(res.date),
+                            members_present: res.members_present,
+                            members_absent: res.members_absent,
+                            visitors: res.visitors,
+                        });
+                        observer.complete();
+                    },
+                    error: err => {
+                        switch (err.status) {
+                            default:
+                                console.log("Unknown HTTP response", err);
+                                observer.error({ code: 'unknown', });
+                                break;
+                        }
+                    }
+                })
+            ;
+        });
+    }
 }

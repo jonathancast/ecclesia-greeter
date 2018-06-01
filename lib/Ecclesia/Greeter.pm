@@ -136,6 +136,17 @@ prefix '/api' => sub {
     get '/attendance/dates' => sub {
         return [ schema->resultset('Checkin')->order_by({ -desc => 'date', })->distinct->get_column('date')->all() ];
     };
+
+    get '/attendance' => sub {
+        my $date = query_parameters->get('date') or return missing_param('date');
+
+        return {
+            date => $date,
+            members_present => [ schema->resultset('Member')->present_on($date)->order_by('id')->hri->all() ],
+            members_absent => [ schema->resultset('Member')->absent_on($date)->order_by('id')->hri->all() ],
+            visitors => [ schema->resultset('Visitor')->search({ date => $date, })->order_by('id')->hri->all() ],
+        };
+    };
 };
 
 sub missing_param {

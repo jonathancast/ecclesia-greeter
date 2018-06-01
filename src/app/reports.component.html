@@ -1,4 +1,33 @@
 <div class="options">
-    Day: <select [(ngModel)]="date"><option *ngFor="let d of dates" value="{{d}}">{{d.format("MMM DD, YYYY")}}</option></select>
+    <span class="option">Day: <select [(ngModel)]="date"><option *ngFor="let d of dates" value="{{d.toISOString()}}">{{d.format("MMM DD, YYYY")}}</option></select></span>
+    <span class="go"><button id="go" (click)="reload_report()">Go</button></span>
 </div>
 <div class="error">{{error_message}}</div>
+<section class="report" *ngIf="data != undefined">
+    <h1>{{data.date.format("MMM DD, YYYY")}}</h1>
+    <section id="present">
+        <h1>Members Present</h1>
+        <div *ngFor="let m of data.members_present">
+            <div>Name: {{m.full_name}}</div>
+        </div>
+    </section>
+    <section id="visitors">
+        <h1>Visitors</h1>
+        <div *ngFor="let v of data.visitors">
+            <div>Name: {{v.name}}</div>
+            <div>Phone: {{v.phone}}</div>
+            <div>Email: {{v.email}}</div>
+            <div>Address: {{v.address}}<br>{{v.address2}}</div>
+            <div>City: {{v.city}}</div>
+            <div>State: {{v.state}}</div>
+            <div>Number present: {{v.number}}</div>
+            <div>Number of children: {{v.num_children}}</div>
+        </div>
+    </section>
+    <section id="absent">
+        <h1>Members Absent</h1>
+        <div *ngFor="let m of data.members_absent">
+            <div>Name: {{m.full_name}}</div>
+        </div>
+    </section>
+</section>

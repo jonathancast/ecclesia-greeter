@@ -4,6 +4,8 @@ class Ecclesia::Greeter::Stores::Schema::Result::Member extends DBIx::Class::Cor
     use DBIx::Class::Candy -autotable => v1;
     use DBIx::Class::Relationship::Abbreviate qw/ result /;
 
+    __PACKAGE__->load_components(qw/ Helper::Row::SelfResultSet /);
+
     primary_column id => { data_type => 'int', is_auto_increment => 1, };
 
     column full_name => { data_type => 'text', length => '1024', null => false, };
