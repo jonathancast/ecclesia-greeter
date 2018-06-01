@@ -35,7 +35,7 @@ SET default_with_oids = false;
 
 CREATE TABLE checkins (
     id integer NOT NULL,
-    date timestamp with time zone NOT NULL,
+    date date NOT NULL,
     member_id integer NOT NULL
 );
 
@@ -238,7 +238,7 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 CREATE TABLE visitors (
     id integer NOT NULL,
-    date timestamp with time zone NOT NULL,
+    date date NOT NULL,
     name text NOT NULL,
     phone text,
     email text,
@@ -328,8 +328,10 @@ ALTER TABLE ONLY visitors ALTER COLUMN id SET DEFAULT nextval('visitors_id_seq':
 --
 
 COPY checkins (id, date, member_id) FROM stdin;
-1	2018-05-28 20:21:32+00	2
-2	2018-05-28 20:21:32+00	4
+1	2018-05-28	2
+2	2018-05-28	4
+3	2018-05-31	2
+4	2018-05-31	4
 \.
 
 
@@ -337,7 +339,7 @@ COPY checkins (id, date, member_id) FROM stdin;
 -- Name: checkins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('checkins_id_seq', 2, true);
+SELECT pg_catalog.setval('checkins_id_seq', 4, true);
 
 
 --
@@ -351,6 +353,7 @@ COPY dbix_class_deploymenthandler_versions (id, version, ddl, upgrade_sql) FROM 
 5	5		CREATE TABLE "families" ( "id" serial NOT NULL, PRIMARY KEY ("id") )\nALTER TABLE members ADD COLUMN family_id integer NULL\nCREATE INDEX members_idx_family_id on members (family_id)\nALTER TABLE members ADD CONSTRAINT members_fk_family_id FOREIGN KEY (family_id) REFERENCES families (id) ON DELETE CASCADE ON UPDATE CASCADE DEFERRABLEalter table members alter column family_id set not null
 7	6		CREATE TABLE "checkins" ( "id" serial NOT NULL, "date" timestamptz NOT NULL, "member_id" integer NOT NULL, PRIMARY KEY ("id") )\nCREATE INDEX "checkins_idx_member_id" on "checkins" ("member_id")\nALTER TABLE "checkins" ADD CONSTRAINT "checkins_fk_member_id" FOREIGN KEY ("member_id") REFERENCES "members" ("id") DEFERRABLE
 8	7		CREATE TABLE "visitors" ( "id" serial NOT NULL, "date" timestamptz NOT NULL, "name" text NOT NULL, "phone" text, "email" text, "address" text, "address2" text, "city" text, "state" text, "number" integer NOT NULL, "num_children" integer NOT NULL, PRIMARY KEY ("id") )
+9	8		ALTER TABLE checkins ALTER COLUMN date TYPE date\nALTER TABLE visitors ALTER COLUMN date TYPE date
 \.
 
 
@@ -358,7 +361,7 @@ COPY dbix_class_deploymenthandler_versions (id, version, ddl, upgrade_sql) FROM 
 -- Name: dbix_class_deploymenthandler_versions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: vagrant
 --
 
-SELECT pg_catalog.setval('dbix_class_deploymenthandler_versions_id_seq', 8, true);
+SELECT pg_catalog.setval('dbix_class_deploymenthandler_versions_id_seq', 9, true);
 
 
 --
@@ -431,7 +434,7 @@ SELECT pg_catalog.setval('users_id_seq', 1, false);
 --
 
 COPY visitors (id, date, name, phone, email, address, address2, city, state, number, num_children) FROM stdin;
-1	2018-05-30 08:52:48+00	John Smith	\N	\N	\N	\N	\N	\N	1	0
+1	2018-05-30	John Smith	\N	\N	\N	\N	\N	\N	1	0
 \.
 
 

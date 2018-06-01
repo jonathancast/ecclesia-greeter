@@ -104,8 +104,7 @@ with_login(sub($sut) {
             for my $field (@rt_fields) {
                 is $db->$field, $visitor->{$field}, ". . . and it places $field in the database";
             }
-            cmp_ok $db->date, '<=', DateTime->now(time_zone => 'America/Chicago'), '. . . and it places a correct time-stamp in the database';
-            cmp_ok $db->date, '>=', DateTime->now(time_zone => 'America/Chicago')->subtract(seconds => 5), '. . . and it places a correct time-stamp in the database';
+            is $db->date, DateTime->now(time_zone => 'America/Chicago')->truncate(to => 'day'), '. . . and it places a correct time-stamp in the database';
         } catch { die $_ } finally {
             schema->resultset('Visitor')->delete();
         };
