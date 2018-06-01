@@ -1,0 +1,11 @@
+vagrant up
+vagrant ssh web
+cd /vagrant
+perlbrew switch perl-5.26.1@greeter
+plackup -R lib ./bin/app.psgi
+ng build
+pg_dump dev > sql/dev.sql
+dropdb --if-exists dev && createdb dev && psql dev < sql/dev.sql
+./bin/my-migration prepare
+./bin/my-migration upgrade
+./bin/my-migration downgrade
