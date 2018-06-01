@@ -12,6 +12,7 @@ import { MemberComponent } from './member.component';
 import { VisitorComponent } from './visitor.component';
 import { HeaderComponent } from './header.component';
 import { FooterComponent } from './footer.component';
+import { ReportsComponent } from './reports.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { FooterComponent } from './footer.component';
     VisitorComponent,
     HeaderComponent,
     FooterComponent,
+    ReportsComponent,
   ],
   imports: [
     BrowserModule,

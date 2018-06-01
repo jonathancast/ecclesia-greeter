@@ -2,6 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+// Seriously, TypeScript / JavaScript / moment.js, this is terrible
+import { Moment } from 'moment';
+import * as moment from 'moment';
+
 export interface User {}
 export interface SimpleMember {
     id: number;
@@ -162,6 +166,25 @@ export class Api {
                                 break;
                         }
                     },
+                })
+            ;
+        });
+    }
+
+    get attendance_dates() {
+        return new Observable<Moment[]>(observer => {
+            this._http
+                .get<string[]>('/api/attendance/dates')
+                .subscribe({
+                    next: res => { observer.next(res.map(d => moment(d))); observer.complete(); },
+                    error: err => {
+                        switch (err.status) {
+                            default:
+                                console.log("Unknown HTTP response", err);
+                                observer.error({ code: 'unknown', });
+                                break;
+                        }
+                    }
                 })
             ;
         });

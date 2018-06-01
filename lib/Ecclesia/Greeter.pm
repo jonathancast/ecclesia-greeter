@@ -11,7 +11,7 @@ use Scalar::Util qw/ looks_like_number /;
 
 set serializer => 'JSON';
 
-get '/' => sub { send_file '/index.html' };
+get qr{^(/|/reports)$} => sub { send_file '/index.html' };
 
 get '/config' => sub {
     return {

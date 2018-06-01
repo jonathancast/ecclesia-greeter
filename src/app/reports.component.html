@@ -1,0 +1,4 @@
+<div class="options">
+    Day: <select [(ngModel)]="date"><option *ngFor="let d of dates" value="{{d}}">{{d.format("MMM DD, YYYY")}}</option></select>
+</div>
+<div class="error">{{error_message}}</div>
