@@ -34,7 +34,16 @@ export class ReportsComponent {
             return;
         }
         this._api.attendance(this.date).subscribe({
-            next: res => { this.data = res; console.log(this.data); },
+            next: res => {
+                this.data = res;
+                /* Clean up the data a little bit */
+                this.data.visitors.forEach(v => {
+                    if (v.address == undefined) v.address = '';
+                    if (v.address2 == undefined) v.address2 = '';
+                    if (v.city == undefined) v.city = '';
+                    if (v.state == undefined) v.state = '';
+                });
+            },
             error: err => {
                 switch (err.code) {
                     default:

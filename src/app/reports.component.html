@@ -7,27 +7,35 @@
     <h1>{{data.date.format("MMM DD, YYYY")}}</h1>
     <section id="present">
         <h1>Members Present</h1>
-        <div *ngFor="let m of data.members_present">
-            <div>Name: {{m.full_name}}</div>
-        </div>
+        <table class="present">
+            <tr><th>Name</th></tr>
+            <tr *ngFor="let m of data.members_present"><td>{{m.full_name}}</td></tr>
+        </table>
     </section>
     <section id="visitors">
         <h1>Visitors</h1>
-        <div *ngFor="let v of data.visitors">
-            <div>Name: {{v.name}}</div>
-            <div>Phone: {{v.phone}}</div>
-            <div>Email: {{v.email}}</div>
-            <div>Address: {{v.address}}<br>{{v.address2}}</div>
-            <div>City: {{v.city}}</div>
-            <div>State: {{v.state}}</div>
-            <div>Number present: {{v.number}}</div>
-            <div>Number of children: {{v.num_children}}</div>
-        </div>
+        <table class="visitors">
+            <tr><th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th># Present</th><th># Children</th></tr>
+            <tr *ngFor="let v of data.visitors">
+                <td class="name">{{v.name}}</td>
+                <td class="phone">{{v.phone}}</td>
+                <td class="email">{{v.email}}</td>
+                <td class="address">
+                    {{v.address}}
+                    <br *ngIf="v.address != '' && v.address2 != ''">{{v.address2}}
+                    <br *ngIf="(v.address != '' || v.address2 != '') && (v.city != '' || v.state != '')">
+                    {{v.city}}<span *ngIf="v.city != '' || v.state != ''">, </span>{{v.state}}
+                </td>
+                <td class="number">{{v.number}}</td>
+                <td class="num_children">{{v.num_children}}</td>
+            </tr>
+        </table>
     </section>
     <section id="absent">
         <h1>Members Absent</h1>
-        <div *ngFor="let m of data.members_absent">
-            <div>Name: {{m.full_name}}</div>
-        </div>
+        <table>
+            <tr><th>Name</th></tr>
+            <tr *ngFor="let m of data.members_absent"><td>{{m.full_name}}</td></tr>
+        </table>
     </section>
 </section>
